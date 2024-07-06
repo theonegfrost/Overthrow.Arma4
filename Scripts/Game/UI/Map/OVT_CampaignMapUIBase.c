@@ -49,4 +49,9 @@ class OVT_CampaignMapUIBase : OVT_CampaignMapUIElement
 		
 		return vector.Zero;
 	}
+	
+	OVT_BaseData GetBaseData()
+	{
+		return m_BaseData;
+	}
 }

@@ -17,33 +17,48 @@ class OVT_BaseUpgradeGroupData : Managed
 	vector position;
 }
 
-class OVT_BaseData : Managed
-{
+class OVT_MapLocationData : Managed {
 	[NonSerialized()]
 	int id;
 
 	[NonSerialized()]
 	int faction = -1;
 	
+	[NonSerialized()]
+	EntityID entId;
+	
+	string name = "";	
 	string factionKey = "";
-
+	
 	vector location;
+	
+	OVT_Faction ControllingFaction()
+	{
+		return OVT_Global.GetFactions().GetOverthrowFactionByIndex(faction);
+	}
+	
+	Faction ControllingFactionData()
+	{
+		return GetGame().GetFactionManager().GetFactionByIndex(faction);
+	}
+	
+	bool IsOccupyingFaction()
+	{
+		return faction == OVT_Global.GetConfig().GetOccupyingFactionIndex();
+	}
+}
+
+class OVT_BaseData : OVT_MapLocationData
+{
+	
 	ref array<vector> slotsFilled = {};
 
 	ref array<ref OVT_BaseUpgradeData> upgrades = {};
 
 	[NonSerialized()]
-	EntityID entId;
-
-	[NonSerialized()]
 	ref array<ref EntityID> garrisonEntities = {};
 
 	ref array<ref ResourceName> garrison = {};
-
-	bool IsOccupyingFaction()
-	{
-		return faction == OVT_Global.GetConfig().GetOccupyingFactionIndex();
-	}
 
 	static OVT_BaseData Get(vector pos)
 	{
@@ -51,21 +66,10 @@ class OVT_BaseData : Managed
 	}
 }
 
-class OVT_RadioTowerData : Managed
+class OVT_RadioTowerData : OVT_MapLocationData
 {
 	[NonSerialized()]
-	int id;
-
-	int faction;
-	vector location;
-
-	[NonSerialized()]
 	ref array<ref EntityID> garrison = {};
-
-	bool IsOccupyingFaction()
-	{
-		return faction == OVT_Global.GetConfig().GetOccupyingFactionIndex();
-	}
 }
 
 enum OVT_TargetType
@@ -410,9 +414,12 @@ class OVT_OccupyingFactionManager: OVT_Component
 		int resourcesPerBase = Math.Floor(m_iResources / m_Bases.Count());
 
 		foreach(OVT_BaseData data : m_Bases)
-		{
+		{			
 			OVT_BaseControllerComponent base = GetBase(data.entId);
-			m_iResources -= base.SpendResources(resourcesPerBase, m_iThreat);
+			
+			int spent = base.SpendResources(resourcesPerBase, m_iThreat);
+			Print("[Overthrow.OccupyingFactionManager] Distributed " + spent.ToString() + " resources to " + base.m_sName);			
+			m_iResources -= spent;
 
 			if(m_iResources <= 0) break;
 		}
@@ -604,12 +611,15 @@ class OVT_OccupyingFactionManager: OVT_Component
 		#endif
 
 		int occupyingFactionIndex = m_Config.GetOccupyingFactionIndex();
+		
+		OVT_BaseControllerComponent component = OVT_BaseControllerComponent.Cast(ent.FindComponent(OVT_BaseControllerComponent));
 
 		OVT_BaseData data = new OVT_BaseData();
+		data.name = component.m_sName;
 		data.entId = ent.GetID();
 		data.id = m_Bases.Count();
 		data.location = ent.GetOrigin();
-		data.faction = m_Config.GetOccupyingFactionKey();
+		data.faction = m_Config.GetOccupyingFactionIndex();
 
 		m_Bases.Insert(data);
 		return true;
@@ -704,7 +714,9 @@ class OVT_OccupyingFactionManager: OVT_Component
 				//Dont spawn stuff if a player is watching lol
 				if(OVT_Global.PlayerInRange(data.location, OVT_Global.GetConfig().m_Difficulty.baseCloseRange+100)) continue;
 
-				m_iResources -= base.SpendResources(m_iResources, m_iThreat);
+				int spent = base.SpendResources(m_iResources, m_iThreat);
+				Print("[Overthrow.OccupyingFactionManager] Distributed " + spent.ToString() + " resources to " + base.m_sName);
+				m_iResources -= spent;
 
 				if(m_iResources <= 0) {
 					m_iResources = 0;
@@ -930,6 +942,7 @@ class OVT_OccupyingFactionManager: OVT_Component
 		for(int i=0; i<m_Bases.Count(); i++)
 		{
 			OVT_BaseData data = m_Bases[i];
+			writer.WriteString(data.name);
 			writer.WriteVector(data.location);
 			writer.WriteInt(data.faction);
 		}
@@ -968,7 +981,8 @@ class OVT_OccupyingFactionManager: OVT_Component
 		for(int i=0; i<length; i++)
 		{
 			OVT_BaseData base = new OVT_BaseData();
-
+			
+			if (!reader.ReadString(base.name)) return false;
 			if (!reader.ReadVector(base.location)) return false;
 			if (!reader.ReadInt(base.faction)) return false;
 

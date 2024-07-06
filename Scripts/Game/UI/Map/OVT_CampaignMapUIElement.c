@@ -69,7 +69,7 @@ class OVT_CampaignMapUIElement : SCR_MapUIElement
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
-		m_wBaseIcon = Widget.Cast(w.FindAnyWidget("SideSymbol"));		
+		m_wBaseIcon = w.FindAnyWidget("SideSymbol");		
 	}
 	
 	protected void SetIconFaction(Faction faction)

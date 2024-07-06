@@ -140,6 +140,9 @@ SCR_DestructibleBuildingEntity : "{5CADC96916FF1CC4}Prefabs/Structures/Houses/Vi
 }
 GenericEntity : "{695B8240D946C85B}Prefabs/Controllers/OVT_BaseController.et" {
  components {
+  OVT_BaseControllerComponent "{5982EA25E59CEF15}" {
+   m_sName "Testing Base"
+  }
   SCR_FactionAffiliationComponent "{5E66A8EA8F5BA794}" {
    "faction affiliation" "USSR"
   }

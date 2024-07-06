@@ -8,13 +8,11 @@ class OVT_TownModifierData : Managed
 	int timer;
 }
 
-class OVT_TownData : Managed
-{
-	vector location;
+class OVT_TownData : OVT_MapLocationData
+{	
 	int population;
 	int stability;
 	int support;
-	int faction;
 	
 	[NonSerialized()]
 	int size;
@@ -31,20 +29,6 @@ class OVT_TownData : Managed
 		return Math.Round((support / population ) * 100);
 	}
 	
-	OVT_Faction ControllingFaction()
-	{
-		return OVT_Global.GetFactions().GetOverthrowFactionByIndex(faction);
-	}
-	
-	Faction ControllingFactionData()
-	{
-		return GetGame().GetFactionManager().GetFactionByIndex(faction);
-	}
-	
-	bool IsOccupyingFaction()
-	{
-		return faction == OVT_Global.GetConfig().GetOccupyingFactionIndex();
-	}
 	
 	void CopyFrom(OVT_TownData town)
 	{
@@ -55,6 +39,16 @@ class OVT_TownData : Managed
 		stabilityModifiers = town.stabilityModifiers;
 		supportModifiers = town.supportModifiers;
 		gunDealerPosition = town.gunDealerPosition;
+		
+		if (town.factionKey == "")
+		{
+			Print("Uninitialized faction found for town, setting to default.", LogLevel.WARNING);
+			faction = OVT_Global().GetConfig().GetOccupyingFactionIndex();
+		}else{
+			FactionManager fm = GetGame().GetFactionManager();
+			Faction fac = fm.GetFactionByKey(town.factionKey);
+			faction = fm.GetFactionIndex(fac);
+		}
 	}
 }
 

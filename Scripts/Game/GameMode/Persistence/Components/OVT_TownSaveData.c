@@ -14,6 +14,14 @@ class OVT_TownSaveData : EPF_ComponentSaveData
 		
 		m_aTowns = towns.m_Towns;
 		
+		FactionManager fm = GetGame().GetFactionManager();
+		
+		foreach(OVT_TownData town : m_aTowns)
+		{
+			Faction fac = fm.GetFactionByIndex(town.faction);
+			town.factionKey = fac.GetFactionKey();
+		}
+		
 		return EPF_EReadResult.OK;
 	}
 	

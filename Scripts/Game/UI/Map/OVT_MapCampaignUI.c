@@ -73,6 +73,11 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 		if(m_SelectedElement) m_SelectedElement.DeselectIcon();
 		handler.SelectIcon();
 		m_SelectedElement = handler;
+		
+		if(m_MapInfo)
+		{
+			m_MapInfo.SelectBase(handler.GetBaseData());
+		}
 	}
 	
 	protected void OnTownClick(OVT_CampaignMapUITown handler)

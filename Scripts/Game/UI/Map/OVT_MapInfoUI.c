@@ -3,6 +3,9 @@ class OVT_MapInfoUI : SCR_MapUIBaseComponent
 	[Attribute()]
 	protected ResourceName m_Layout;
 	
+	[Attribute()]
+	protected ResourceName m_BaseLayout;
+	
 	[Attribute(uiwidget: UIWidgets.ResourceNamePicker, desc: "Modifier Layout", params: "layout")]
 	ResourceName m_ModLayout;
 	
@@ -13,7 +16,9 @@ class OVT_MapInfoUI : SCR_MapUIBaseComponent
 	ref Color m_PositiveModifierColor;
 	
 	protected Widget m_wInfoRoot;
+	protected Widget m_wBaseInfoRoot;
 	protected OVT_TownData m_SelectedTown;
+	protected OVT_BaseData m_SelectedBase;
 	
 	protected void ShowTownInfo()
 	{
@@ -128,21 +133,52 @@ class OVT_MapInfoUI : SCR_MapUIBaseComponent
 		}
 	}
 	
+	protected void ShowBaseInfo()
+	{
+		if(!m_wBaseInfoRoot) return;
+		if(!m_SelectedBase) return;
+		
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		
+		ImageWidget img = ImageWidget.Cast(m_wBaseInfoRoot.FindAnyWidget("ControllingFaction"));
+		img.LoadImageTexture(0, m_SelectedBase.ControllingFactionData().GetUIInfo().GetIconPath());
+		
+		TextWidget widget = TextWidget.Cast(m_wBaseInfoRoot.FindAnyWidget("BaseName"));
+		widget.SetText(m_SelectedBase.name);		
+		
+		widget = TextWidget.Cast(m_wBaseInfoRoot.FindAnyWidget("Distance"));
+		float distance = vector.Distance(m_SelectedBase.location, player.GetOrigin());
+		string dis, units;
+		SCR_Global.GetDistForHUD(distance, false, dis, units);
+		widget.SetText(dis + " " + units);
+	}
+	
 	override void OnMapOpen(MapConfiguration config)
 	{		
 		super.OnMapOpen(config);
 		
-		Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
+		Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);		
+		m_wInfoRoot = w;		
+		w.SetVisible(false);	
 		
-		m_wInfoRoot = w;
-		
-		w.SetVisible(false);		
+		w = GetGame().GetWorkspace().CreateWidgets(m_BaseLayout, m_RootWidget);		
+		m_wBaseInfoRoot = w;		
+		w.SetVisible(false);	
 	}
 	
 	void SelectTown(OVT_TownData town)
 	{
+		m_wBaseInfoRoot.SetVisible(false);
 		m_wInfoRoot.SetVisible(true);
 		m_SelectedTown = town;
 		ShowTownInfo();
+	}
+	
+	void SelectBase(OVT_BaseData base)
+	{
+		m_wBaseInfoRoot.SetVisible(true);
+		m_wInfoRoot.SetVisible(false);
+		m_SelectedBase = base;
+		ShowBaseInfo();
 	}
 }
