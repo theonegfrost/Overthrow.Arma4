@@ -2,35 +2,207 @@ FrameWidgetClass {
  Name "rootFrame"
  "Z Order" 8
  Clipping False
+ components {
+  OVT_CampaignMapUIElement "{61D05ABA87778394}" {
+  }
+ }
  {
-  SizeLayoutWidgetClass "{5994FB77FD289DB6}" {
-   Name "ImageLayout"
-   Slot FrameWidgetSlot "{566E7A663B359583}" {
-    Anchor 0 0 0 0
+  OverlayWidgetClass "{61D05ABAA0CB9332}" {
+   Name "Overlay0"
+   Slot FrameWidgetSlot "{5712D788F1DFB22C}" {
+    Anchor 0.5 0.5 0.5 0.5
     PositionX 0
     OffsetLeft 0
     PositionY 0
     OffsetTop 0
-    SizeX 44
-    OffsetRight -44
-    SizeY 44
-    OffsetBottom -44
+    OffsetRight -100
+    SizeY 100
+    OffsetBottom -100
     Alignment 0.5 0.5
    }
    {
-    ImageWidgetClass "{5994FB77FD289DB5}" {
-     Name "Image"
-     Slot AlignableSlot "{59945480BE60B0C7}" {
-      HorizontalAlign 1
-      VerticalAlign 1
-      Padding 0 0 0 0
+    SizeLayoutWidgetClass "{61D05ABAA0CB9331}" {
+     Name "SizeBaseIcon"
+     Slot OverlayWidgetSlot "{5712D788F02EA7EE}" {
      }
-     Color 0 0 0 1
-     Texture "{C7691945DE01FB28}UI/Imagesets/overthrow_mapicons.imageset"
-     Image "house"
-     Size 128 128
-     "Blend Mode" Blend
-     Range 0.414
+     "Ignore Cursor" 0
+     AllowWidthOverride 1
+     WidthOverride 60
+     AllowHeightOverride 1
+     HeightOverride 60
+     {
+      OverlayWidgetClass "{61D05ABAA0CB9330}" {
+       Name "ImageOverlay"
+       Slot AlignableSlot "{5712D78E585B4C60}" {
+        HorizontalAlign 3
+        VerticalAlign 3
+       }
+       "Is Enabled" 0
+       {
+        OverlayWidgetClass "{61D068EB02725498}" {
+         Name "IconSymbol"
+         Slot OverlayWidgetSlot "{61D068EB02725566}" {
+         }
+         "Z Order" 4
+         Color 0.014 0.014 0.014 1
+         {
+          SizeLayoutWidgetClass "{61D05ABAA0CB933E}" {
+           Name "SizeLayout0"
+           Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
+           }
+           "Inherit Color" 1
+           AllowWidthOverride 1
+           WidthOverride 32
+           AllowHeightOverride 1
+           HeightOverride 32
+           {
+            ImageWidgetClass "{61D05ABAA0CB933D}" {
+             Name "Icon"
+             Slot AlignableSlot "{5E66BC35A573A4F0}" {
+             }
+             "Inherit Color" 1
+             Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+             Image "careerCircle"
+             Size 128 128
+            }
+           }
+          }
+         }
+        }
+        OverlayWidgetClass "{61D05ABAA0CB933F}" {
+         Name "SideSymbol"
+         Slot OverlayWidgetSlot "{5646BAA78B50FE6C}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+          Padding 0 0 0 0
+         }
+         "Z Order" 4
+         "Is Visible" 0
+         Color 0.018 0.018 0.018 1
+         components {
+          SCR_MilitarySymbolUIComponent "{61D068E9D63A0058}" {
+           m_MilitarySymbol SCR_MilitarySymbol "{61D068E9D59BAC29}" {
+            m_Identity OPFOR
+            m_Dimension INSTALLATION
+           }
+          }
+         }
+        }
+        SizeLayoutWidgetClass "{61D068EFA0ACA78B}" {
+         Name "SizeLayout0"
+         Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
+         }
+         "Inherit Color" 1
+         AllowWidthOverride 1
+         WidthOverride 64
+         AllowHeightOverride 1
+         HeightOverride 64
+         {
+          ImageWidgetClass "{61D05ABAA0CB933C}" {
+           Name "Highlight"
+           Slot AlignableSlot "{61D068EFA8BB5EF0}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+            Padding 0 0 0 0
+           }
+           "Z Order" 3
+           "Is Visible" 0
+           Color 1 1 1 0.519
+           Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+           Image "careerCircle"
+           Size 128 128
+          }
+         }
+        }
+        SizeLayoutWidgetClass "{61D07981C598845D}" {
+         Name "SizeLayout1"
+         Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
+         }
+         "Inherit Color" 1
+         AllowWidthOverride 1
+         WidthOverride 64
+         AllowHeightOverride 1
+         HeightOverride 64
+         {
+          ImageWidgetClass "{61D07981C598845C}" {
+           Name "Special"
+           Slot AlignableSlot "{61D068EFA8BB5EF0}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+            Padding 0 0 0 0
+           }
+           "Z Order" 3
+           "Is Visible" 0
+           Color 1 1 1 0.519
+           Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+           Image "careerCircle"
+           Size 128 128
+          }
+         }
+        }
+        SizeLayoutWidgetClass "{61D07981DD78BF1C}" {
+         Name "SizeLayout2"
+         Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
+         }
+         "Inherit Color" 1
+         AllowWidthOverride 1
+         WidthOverride 64
+         AllowHeightOverride 1
+         HeightOverride 64
+         {
+          ImageWidgetClass "{61D07981DD78BF1B}" {
+           Name "Corners"
+           Slot AlignableSlot "{61D068EFA8BB5EF0}" {
+            HorizontalAlign 3
+            VerticalAlign 3
+            Padding 0 0 0 0
+           }
+           "Z Order" 3
+           "Is Visible" 0
+           Color 1 1 1 0.519
+           Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+           Image "careerCircle"
+           Size 128 128
+          }
+         }
+        }
+        ButtonWidgetClass "{61D05ABAA0CB9339}" {
+         Name "BaseFrame"
+         Slot OverlayWidgetSlot "{55EAFD1162B82B7E}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         "Ignore Cursor" 0
+         Color 1 1 1 0
+         {
+          ImageWidgetClass "{61D05ABAA0CB9338}" {
+           Name "Image0"
+           Slot ButtonWidgetSlot "{5A74C103AACB7005}" {
+           }
+           "Is Visible" 0
+           Color 0.561 0.071 0.439 0.404
+          }
+         }
+        }
+        ImageWidgetClass "{61D05ABAA0CB9327}" {
+         Name "BackgroundGradient"
+         Slot OverlayWidgetSlot "{56FAD15D251881C8}" {
+          HorizontalAlign 3
+          VerticalAlign 3
+         }
+         "Is Visible" 0
+         Opacity 0.766
+         Color 0 0 0 0.745
+         Saturation 0.555
+         Mask "{0BFC9F2798DAD87D}system/textures/PP/HDRCircleWeight_A.edds"
+         "Transition width" 0.498
+         Progress 0.461
+         "Mask Mode" "Exclude Range"
+         Range 0.672
+        }
+       }
+      }
+     }
     }
    }
   }

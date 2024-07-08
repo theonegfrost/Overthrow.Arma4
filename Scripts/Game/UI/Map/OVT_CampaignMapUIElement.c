@@ -2,10 +2,36 @@ class OVT_CampaignMapUIElement : SCR_MapUIElement
 {
 	protected string m_sFactionKey;
 	protected Widget m_wBaseIcon;
+	protected Widget m_wIcon;
+	protected SCR_MilitarySymbolUIComponent m_wSymbolUI;
 	
 	protected ref ScriptInvoker m_OnMapIconEnter;
 	protected ref ScriptInvoker m_OnMapIconClick;
 	protected ref ScriptInvoker m_OnMapIconSelected;
+	
+	protected ref OVT_MapLocationData m_Data;
+	protected bool m_bIsMilitaryInstallation;
+	
+	void SetData(OVT_MapLocationData data)
+	{
+		m_Data = data;
+	}
+	
+	void SetAsMilitaryInstallation()
+	{
+		m_bIsMilitaryInstallation = true;	
+		m_wIcon.SetVisible(false);
+		m_wBaseIcon.SetVisible(true);	
+	}
+	
+	void SetIcon(ResourceName imageset, string icon)
+	{
+		if (!m_wBaseIcon)
+			return;
+		
+		ImageWidget image = ImageWidget.Cast(m_wIcon.FindAnyWidget("Icon"));
+		image.LoadImageFromSet(0, imageset, icon);
+	}
 	
 	ScriptInvoker GetOnMapIconEnter()
 	{
@@ -69,7 +95,9 @@ class OVT_CampaignMapUIElement : SCR_MapUIElement
 	override void HandlerAttached(Widget w)
 	{
 		super.HandlerAttached(w);
-		m_wBaseIcon = w.FindAnyWidget("SideSymbol");		
+		m_wBaseIcon = w.FindAnyWidget("SideSymbol");	
+		m_wIcon = w.FindAnyWidget("IconSymbol");	
+		m_wSymbolUI = SCR_MilitarySymbolUIComponent.Cast(m_wBaseIcon.FindHandler(SCR_MilitarySymbolUIComponent));					
 	}
 	
 	protected void SetIconFaction(Faction faction)
@@ -77,6 +105,33 @@ class OVT_CampaignMapUIElement : SCR_MapUIElement
 		if(!faction) return;
 		m_sFactionKey = faction.GetFactionKey();
 		SetBaseIconFactionColor(faction);
+	}
+	
+	void SetFaction(int faction)
+	{
+		FactionManager fm = GetGame().GetFactionManager();
+		Faction fac = fm.GetFactionByIndex(faction);
+		m_sFactionKey = fac.GetFactionKey();
+		SetBaseIconFactionColor(fac);
+		
+		if(!m_wSymbolUI) return;
+			
+		SCR_MilitarySymbol baseIcon = new SCR_MilitarySymbol();
+			
+		if(m_bIsMilitaryInstallation)
+		{
+			if(m_Data.IsOccupyingFaction())
+			{
+				baseIcon.SetIdentity(EMilitarySymbolIdentity.OPFOR);
+			}else{
+				baseIcon.SetIdentity(EMilitarySymbolIdentity.BLUFOR);
+			}
+			
+			baseIcon.SetDimension(EMilitarySymbolDimension.INSTALLATION);			
+		}else{
+			baseIcon.SetDimension(EMilitarySymbolDimension.NONE);
+		}
+		m_wSymbolUI.Update(baseIcon);
 	}
 	
 	string GetFactionKey()
@@ -104,10 +159,15 @@ class OVT_CampaignMapUIElement : SCR_MapUIElement
 		m_wBaseIcon.SetColor(color);
 		if (m_wGradient)
 			m_wGradient.SetColor(color);
+		
+		if (!m_wIcon)
+			return;
+		
+		m_wIcon.SetColor(color);
 	}
 	
 	override vector GetPos()
 	{		
-		return vector.Zero;
+		return m_Data.location;
 	}
 }

@@ -38,6 +38,8 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 		
 	override void Update(float timeSlice)
 	{
+		if(m_bDisableComponent) return;
+		
 		foreach(int i, Widget w : m_Widgets)
 		{
 			if(m_MapEntity.GetCurrentZoom() < m_Ranges[i])
@@ -86,6 +88,8 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 	override void OnMapOpen(MapConfiguration config)
 	{
 		super.OnMapOpen(config);
+		
+		if(m_bDisableComponent) return;
 		
 		m_Centers = new array<vector>;
 		m_Widgets = new array<ref Widget>;

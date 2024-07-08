@@ -50,8 +50,7 @@ FrameWidgetClass {
          components {
           SCR_MilitarySymbolUIComponent "{56F4CE75B4245547}" {
            m_MilitarySymbol SCR_MilitarySymbol "{56F4CE75B761BCC4}" {
-            m_Identity OPFOR
-            m_Dimension INSTALLATION
+            m_Dimension NONE
            }
           }
          }

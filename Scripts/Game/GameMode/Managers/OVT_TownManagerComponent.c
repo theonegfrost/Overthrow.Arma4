@@ -683,6 +683,8 @@ class OVT_TownManagerComponent: OVT_Component
 		
 		m_Towns.Insert(town);
 		m_TownNames.Insert(mapdesc.Item().GetDisplayName());
+		
+		town.Register();
 	}
 	
 	protected void SetupTowns()

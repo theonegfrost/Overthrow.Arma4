@@ -27,10 +27,27 @@ class OVT_MapLocationData : Managed {
 	[NonSerialized()]
 	EntityID entId;
 	
+	[NonSerialized()]
+	string type;
+	
 	string name = "";	
 	string factionKey = "";
 	
 	vector location;
+	
+	void Register()
+	{
+		OVT_EconomyManagerComponent economy = OVT_Global.GetEconomy();
+		
+		economy.m_aMapLocations.Insert(this);
+	}
+	
+	void Unregister()
+	{
+		OVT_EconomyManagerComponent economy = OVT_Global.GetEconomy();
+		
+		economy.m_aMapLocations.RemoveItem(this);
+	}
 	
 	OVT_Faction ControllingFaction()
 	{
@@ -46,6 +63,8 @@ class OVT_MapLocationData : Managed {
 	{
 		return faction == OVT_Global.GetConfig().GetOccupyingFactionIndex();
 	}
+	
+	
 }
 
 class OVT_BaseData : OVT_MapLocationData
@@ -622,6 +641,9 @@ class OVT_OccupyingFactionManager: OVT_Component
 		data.faction = m_Config.GetOccupyingFactionIndex();
 
 		m_Bases.Insert(data);
+		
+		data.Register();
+		
 		return true;
 	}
 
@@ -980,7 +1002,7 @@ class OVT_OccupyingFactionManager: OVT_Component
 		if (!reader.ReadInt(length)) return false;
 		for(int i=0; i<length; i++)
 		{
-			OVT_BaseData base = new OVT_BaseData();
+			OVT_BaseData base = new OVT_BaseData();			
 			
 			if (!reader.ReadString(base.name)) return false;
 			if (!reader.ReadVector(base.location)) return false;
@@ -988,6 +1010,8 @@ class OVT_OccupyingFactionManager: OVT_Component
 
 			base.id = i;
 			m_Bases.Insert(base);
+			
+			base.Register();
 		}
 
 		//Recieve JIP radio towers

@@ -45,6 +45,21 @@ class OVT_ShopInventoryConfig : ScriptAndConfig
 	ref array<ref OVT_ShopInventoryItem> m_aInventoryItems;
 }
 
+class OVT_ShopData : OVT_MapLocationData
+{
+	
+}
+
+class OVT_GunDealerData : OVT_MapLocationData
+{
+	
+}
+
+class OVT_PortData : OVT_MapLocationData
+{
+	
+}
+
 class OVT_EconomyManagerComponent: OVT_Component
 {
 	[Attribute("", UIWidgets.Object)]
@@ -89,6 +104,8 @@ class OVT_EconomyManagerComponent: OVT_Component
 	protected int m_iHourPaidStock = -1;
 	protected int m_iHourPaidRent = -1;
 	
+	ref array<ref OVT_MapLocationData> m_aMapLocations;
+	
 	//Streamed to clients..			
 	int m_iResistanceMoney = 0;
 	float m_fResistanceTax = 0;
@@ -127,6 +144,7 @@ class OVT_EconomyManagerComponent: OVT_Component
 		m_aLegalVehicles = new array<int>;
 		m_aAllVehicles = new array<int>;
 		m_mVehicleParking = new map<int,OVT_ParkingType>;
+		m_aMapLocations = new array<ref OVT_MapLocationData>;
 	}
 	
 	void CheckUpdate()
@@ -1159,6 +1177,11 @@ class OVT_EconomyManagerComponent: OVT_Component
 			
 			OVT_ShopComponent shop = GetShopByRplId(id);
 			shop.m_iTownId = townID;
+			
+			OVT_ShopData data();
+			data.type = shop.m_ShopType.ToString();
+			data.location = entity.GetOrigin();		
+			data.Register();	
 		}
 		
 		return true;
@@ -1257,6 +1280,14 @@ class OVT_EconomyManagerComponent: OVT_Component
 		{			
 			if (!reader.ReadRplId(id)) return false;
 			m_aAllShops.Insert(id);
+			
+			OVT_ShopComponent shop = GetShopByRplId(id);
+			OVT_ShopData data();
+			data.type = shop.m_ShopType.ToString();
+			RplComponent rpl = RplComponent.Cast(Replication.FindItem(id));
+			IEntity entity = rpl.GetEntity();
+			data.location = entity.GetOrigin();		
+			data.Register();	
 		}
 		
 		if (!reader.ReadInt(length)) return false;
@@ -1395,6 +1426,11 @@ class OVT_EconomyManagerComponent: OVT_Component
 		{
 			m_mVehicleParking.Clear();
 			m_mVehicleParking = null;
+		}
+		if(m_aMapLocations)
+		{
+			m_aMapLocations.Clear();
+			m_aMapLocations = null;
 		}
 	}
 }
