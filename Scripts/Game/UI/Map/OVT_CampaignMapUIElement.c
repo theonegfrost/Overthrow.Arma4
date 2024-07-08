@@ -12,9 +12,26 @@ class OVT_CampaignMapUIElement : SCR_MapUIElement
 	protected ref OVT_MapLocationData m_Data;
 	protected bool m_bIsMilitaryInstallation;
 	
+	protected ref OVT_MapCampaignUIHandler m_Handler;
+	
 	void SetData(OVT_MapLocationData data)
 	{
 		m_Data = data;
+	}
+	
+	OVT_MapLocationData GetData()
+	{
+		return m_Data;
+	}
+	
+	void SetHandler(OVT_MapCampaignUIHandler handler)
+	{
+		m_Handler = handler;
+	}
+	
+	OVT_MapCampaignUIHandler GetHandler()
+	{
+		return m_Handler;
 	}
 	
 	void SetAsMilitaryInstallation()

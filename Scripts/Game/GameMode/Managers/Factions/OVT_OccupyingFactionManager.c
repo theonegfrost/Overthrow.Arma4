@@ -671,6 +671,8 @@ class OVT_OccupyingFactionManager: OVT_Component
 		data.faction = occupyingFactionIndex;
 
 		m_RadioTowers.Insert(data);
+		
+		data.Register();
 
 		return true;
 	}
@@ -1025,6 +1027,8 @@ class OVT_OccupyingFactionManager: OVT_Component
 
 			base.id = i;
 			m_RadioTowers.Insert(base);
+			
+			base.Register();
 		}
 		if (!reader.ReadVector(m_vQRFLocation)) return false;
 		if (!reader.ReadInt(m_iQRFPoints)) return false;

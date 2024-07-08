@@ -1204,6 +1204,11 @@ class OVT_EconomyManagerComponent: OVT_Component
 		{
 			RplId id = rpl.Id();
 			m_aAllPorts.Insert(id);
+			
+			OVT_ShopData data();
+			data.location = entity.GetOrigin();
+			data.type = "port";
+			data.Register();
 		}
 		
 		return true;

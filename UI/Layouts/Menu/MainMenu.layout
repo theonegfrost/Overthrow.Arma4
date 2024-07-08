@@ -405,6 +405,7 @@ FrameWidgetClass {
        Slot LayoutSlot "{557478C3F0230865}" {
        }
        "Is Enabled" 0
+       "Is Visible" 0
        components {
         SCR_ButtonTextComponent "{5548F0143AE99095}" {
          m_BackgroundSelected 1 1 1 0.196
@@ -526,6 +527,7 @@ FrameWidgetClass {
        Slot LayoutSlot "{557478C3F0230865}" {
        }
        "Is Enabled" 0
+       "Is Visible" 0
        components {
         SCR_ButtonTextComponent "{5548F0143AE99095}" {
          m_BackgroundSelected 1 1 1 0.196

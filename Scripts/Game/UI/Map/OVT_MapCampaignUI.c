@@ -21,7 +21,7 @@ class OVT_MapCampaignUIHandlerDefinition : Managed
 	[Attribute("")]
 	string m_sDataClassName;
 	
-	[Attribute("", UIWidgets.Object, "Handler Class (optional")]
+	[Attribute("", UIWidgets.Object, "Handler Class (optional)")]
 	ref OVT_MapCampaignUIHandler m_Handler;
 	
 	[Attribute()]
@@ -40,8 +40,12 @@ class OVT_MapCampaignUIHandlerDefinition : Managed
 	bool m_bIsMilitaryInstallation;
 }
 
+[BaseContainerProps()]
 class OVT_MapCampaignUIHandler : Managed
 {
+	[Attribute("", params: "layout")]
+	ResourceName m_Layout;
+	
 	protected ref OVT_MapLocationData m_Data;
 	
 	void SetData(OVT_MapLocationData data)
@@ -68,38 +72,26 @@ class OVT_MapCampaignUIHandler : Managed
 	{
 		return false;
 	}
+	
+	void ShowInfo(Widget layoutRoot)
+	{
+		
+	}
 }
 
 
 class OVT_MapCampaignUI : SCR_MapUIElementContainer
-{
-	[Attribute("{9B45BD0282167D90}UI/Layouts/Map/BaseElement.layout", params: "layout")]
-	protected ResourceName m_sBaseElement;
-	
-	[Attribute("{B6846D46BDF6311E}UI/Layouts/Map/TownElement.layout", params: "layout")]
-	protected ResourceName m_sTownElement;
-	
+{	
 	protected OVT_CampaignMapUIElement m_SelectedElement;
-	protected OVT_MapInfoUI m_MapInfo;
+	protected Widget m_MapInfo;
 	
 	[Attribute("", UIWidgets.Object, "Overthrow map handlers")]
 	protected ref array<ref OVT_MapCampaignUIHandlerDefinition> m_aHandlers;
 	
-	[Attribute("{F5E0CFFFC9F27B19}UI/Layouts/Map/MapIcon.layout")]
+	[Attribute("{F5E0CFFFC9F27B19}UI/Layouts/Map/MapIcon.layout", params: "layout")]
 	protected ResourceName m_IconLayout;
 	
 	protected ref map<Widget, float> m_mCeilings = new map<Widget, float>();
-	
-	override void Init()
-	{
-		super.Init();
-		
-		OVT_MapInfoUI mapInfo = OVT_MapInfoUI.Cast(m_MapEntity.GetMapUIComponent(OVT_MapInfoUI));
-		if (mapInfo)
-		{
-			m_MapInfo = mapInfo;
-		}
-	}
 	
 	protected void InitIcons()
 	{
@@ -170,78 +162,11 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 
 			FrameSlot.SetSizeToContent(w, true);
 			FrameSlot.SetAlignment(w, 0.5, 0.5);
-		}
-	}
-	
-	protected void InitBases()
-	{
-		OVT_OccupyingFactionManager of = OVT_Global.GetOccupyingFaction();
-		if(!of) return;
-		
-		foreach (OVT_BaseData baseData : of.m_Bases)
-		{
-			Widget w = GetGame().GetWorkspace().CreateWidgets(m_sBaseElement, m_wIconsContainer);
-			OVT_CampaignMapUIBase handler = OVT_CampaignMapUIBase.Cast(w.FindHandler(OVT_CampaignMapUIBase));
 			
-			if (!handler)
-				return;
-			
-			handler.GetOnMapIconClick().Insert(OnBaseClick);
-
-			handler.SetParent(this);
-			handler.InitBase(baseData);
-			m_mIcons.Set(w, handler);
-
-			FrameSlot.SetSizeToContent(w, true);
-			FrameSlot.SetAlignment(w, 0.5, 0.5);
-		}		
-	}
-	
-	protected void InitTowns()
-	{
-		OVT_TownManagerComponent towns = OVT_Global.GetTowns();
-		if(!towns) return;
-		
-		foreach(OVT_TownData town : towns.m_Towns)
-		{
-			Widget w = GetGame().GetWorkspace().CreateWidgets(m_sTownElement, m_wIconsContainer);
-			OVT_CampaignMapUITown handler = OVT_CampaignMapUITown.Cast(w.FindHandler(OVT_CampaignMapUITown));
-			
-			if (!handler)
-				return;
-			
-			handler.GetOnMapIconClick().Insert(OnTownClick);
-
-			handler.SetParent(this);
-			handler.InitTown(town);
-			m_mIcons.Set(w, handler);
-
-			FrameSlot.SetSizeToContent(w, true);
-			FrameSlot.SetAlignment(w, 0.5, 0.5);
-		}
-	}
-	
-	protected void OnBaseClick(OVT_CampaignMapUIBase handler)
-	{		
-		if(m_SelectedElement) m_SelectedElement.DeselectIcon();
-		handler.SelectIcon();
-		m_SelectedElement = handler;
-		
-		if(m_MapInfo)
-		{
-			m_MapInfo.SelectBase(handler.GetBaseData());
-		}
-	}
-	
-	protected void OnTownClick(OVT_CampaignMapUITown handler)
-	{		
-		if(m_SelectedElement) m_SelectedElement.DeselectIcon();
-		handler.SelectIcon();
-		m_SelectedElement = handler;
-		
-		if(m_MapInfo)
-		{
-			m_MapInfo.SelectTown(handler.GetTownData());
+			if(definition.m_Handler)
+			{
+				handler.SetHandler(definition.m_Handler);
+			}
 		}
 	}
 	
@@ -250,6 +175,23 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 		if(m_SelectedElement) m_SelectedElement.DeselectIcon();
 		handler.SelectIcon();
 		m_SelectedElement = handler;
+		
+		if(m_MapInfo)
+		{
+			m_MapInfo.RemoveFromHierarchy();
+			m_MapInfo = null;
+		}
+		
+		OVT_MapCampaignUIHandler infoHandler = handler.GetHandler();
+		if(infoHandler)
+		{
+			infoHandler.SetData(handler.GetData());
+			if(infoHandler.m_Layout)
+			{
+				m_MapInfo = GetGame().GetWorkspace().CreateWidgets(infoHandler.m_Layout, m_RootWidget);
+				infoHandler.ShowInfo(m_MapInfo);
+			}
+		}
 	}
 	
 	protected override void UpdateIcons()
@@ -274,8 +216,6 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 		super.OnMapOpen(config);
 
 		InitIcons();
-		//InitBases();
-		//InitTowns();
 		UpdateIcons();
 	}
 }
