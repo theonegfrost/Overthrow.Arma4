@@ -15,15 +15,23 @@ class OVT_OccupyingFactionSaveData : EPF_ComponentSaveData
 	override EPF_EReadResult ReadFrom(IEntity owner, GenericComponent component, EPF_ComponentSaveDataClass attributes)
 	{		
 		OVT_OccupyingFactionManager of = OVT_OccupyingFactionManager.Cast(component);
+		FactionManager fm = GetGame().GetFactionManager();
 		
 		m_iResources = of.m_iResources;
-		m_iThreat = of.m_iThreat;		
+		m_iThreat = of.m_iThreat;	
+				
+		foreach(OVT_RadioTowerData tower : of.m_RadioTowers)
+		{
+			Faction fac = fm.GetFactionByIndex(tower.faction);
+			tower.factionKey = fac.GetFactionKey();
+		}
+		
 		m_RadioTowers = of.m_RadioTowers;
 		m_sOccupyingFactionKey = OVT_Global.GetConfig().m_sOccupyingFaction;
 		
 		m_Bases = new array<ref OVT_BaseData>;
 		
-		FactionManager fm = GetGame().GetFactionManager();
+		
 		
 		foreach(OVT_BaseData base : of.m_Bases)
 		{
@@ -96,7 +104,16 @@ class OVT_OccupyingFactionSaveData : EPF_ComponentSaveData
 		{
 			OVT_RadioTowerData existing = of.GetNearestRadioTower(tower.location);
 			if(!existing) continue;
-			existing.faction = tower.faction;
+			
+			if (tower.factionKey == "")
+			{
+				Print("Uninitialized faction found for tower, setting to default.", LogLevel.WARNING);
+				tower.faction = OVT_Global().GetConfig().GetOccupyingFactionIndex();
+			}else{
+				FactionManager fm = GetGame().GetFactionManager();
+				Faction faction = fm.GetFactionByKey(tower.factionKey);
+				existing.faction = fm.GetFactionIndex(faction);
+			}	
 		}
 		
 		return EPF_EApplyResult.OK;

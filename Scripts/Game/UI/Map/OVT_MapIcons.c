@@ -63,8 +63,8 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 		foreach(int i, Widget w : m_POIWidgets)
 		{
 			OVT_MapPOIData poi = m_aPOIs[i];
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
-			SizeLayoutWidget size = SizeLayoutWidget.Cast(w.FindAnyWidget("ImageLayout"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
+			SizeLayoutWidget size = SizeLayoutWidget.Cast(w.FindAnyWidget("IconSizeLayout"));
 			if(m_MapEntity.GetCurrentZoom() < 1)
 			{
 				m_POIDefaultIcon.SetIconTo(image);
@@ -129,7 +129,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 				if(!base || base.IsOccupyingFaction()) continue;				
 			}		
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			data.m_UiInfo.SetIconTo(image);	
 			
 			m_POIWidgets.Insert(w);
@@ -154,7 +154,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(range);			
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			image.LoadImageFromSet(0, m_Imageset, "house");					
 			
 			m_Widgets.Insert(w);
@@ -174,7 +174,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(m_fCeiling);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			image.LoadImageFromSet(0, m_Imageset, "house");
 			image.SetColor(Color.Gray25);
 			
@@ -198,7 +198,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(0);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			image.LoadImageFromSet(0, m_Imageset, "warehouse");
 			
 			m_Widgets.Insert(w);
@@ -221,7 +221,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(0);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			image.LoadImageFromSet(0, m_Imageset, "warehouse");
 			image.SetColor(Color.Gray25);
 			
@@ -237,42 +237,8 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(m_fCeiling);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			image.LoadImageFromSet(0, m_Imageset, "gundealer");
-			
-			m_Widgets.Insert(w);
-		}
-		
-		foreach(RplId id : economy.GetAllShops())
-		{
-			RplComponent rpl = RplComponent.Cast(Replication.FindItem(id));
-			if(!rpl) continue;
-			IEntity ent = rpl.GetEntity();
-			m_Centers.Insert(ent.GetOrigin());
-			m_Ranges.Insert(m_fCeiling);
-			
-			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
-			OVT_ShopComponent shop = OVT_ShopComponent.Cast(ent.FindComponent(OVT_ShopComponent));
-			
-			string icon = "shop";
-			switch(shop.m_ShopType)
-			{
-				case OVT_ShopType.SHOP_ELECTRONIC:
-					icon = "electronics";
-					break;
-				case OVT_ShopType.SHOP_CLOTHES:
-					icon = "clothes";
-					break;
-				case OVT_ShopType.SHOP_DRUG:
-					icon = "pharmacy";
-					break;
-				case OVT_ShopType.SHOP_VEHICLE:
-					icon = "vehicles";
-					break;
-			}
-			
-			image.LoadImageFromSet(0, m_Imageset, icon);
 			
 			m_Widgets.Insert(w);
 		}
@@ -285,7 +251,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(m_fCeiling);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 			image.LoadImageFromSet(0, m_Imageset, "vehicle");
 			
 			vector angles = ent.GetYawPitchRoll();
@@ -301,7 +267,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(m_fCeiling);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 						
 			image.LoadImageFromSet(0, m_Imageset, "camp");
 			
@@ -314,39 +280,10 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(0);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 						
 			image.LoadImageFromSet(0, m_Imageset, "fob");
 			
-			m_Widgets.Insert(w);
-		}
-		
-		foreach(OVT_RadioTowerData tower : occupying.m_RadioTowers)
-		{			
-			m_Centers.Insert(tower.location);
-			m_Ranges.Insert(0);
-			
-			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
-						
-			image.LoadImageFromSet(0, m_Imageset, "tower");	
-			
-			Faction faction = GetGame().GetFactionManager().GetFactionByIndex(tower.faction);
-			image.SetColor(faction.GetFactionColor());
-								
-			m_Widgets.Insert(w);
-		}
-		
-		foreach(RplId id : economy.GetAllPorts())
-		{
-			RplComponent rpl = RplComponent.Cast(Replication.FindItem(id));
-			m_Centers.Insert(rpl.GetEntity().GetOrigin());
-			m_Ranges.Insert(0);
-			
-			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
-						
-			image.LoadImageFromSet(0, m_Imageset, "port");			
 			m_Widgets.Insert(w);
 		}
 		
@@ -356,7 +293,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 			m_Ranges.Insert(0);
 			
 			Widget w = GetGame().GetWorkspace().CreateWidgets(m_Layout, m_RootWidget);
-			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Image"));
+			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
 						
 			image.LoadImageFromSet(0, m_Imageset, "waypoint");			
 			m_Widgets.Insert(w);

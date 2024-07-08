@@ -47,7 +47,7 @@ FrameWidgetClass {
          Color 0.014 0.014 0.014 1
          {
           SizeLayoutWidgetClass "{61D05ABAA0CB933E}" {
-           Name "SizeLayout0"
+           Name "IconSizeLayout"
            Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
            }
            "Inherit Color" 1
