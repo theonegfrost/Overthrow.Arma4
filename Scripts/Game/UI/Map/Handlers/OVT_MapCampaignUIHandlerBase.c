@@ -19,4 +19,13 @@ class OVT_MapCampaignUIHandlerBase : OVT_MapCampaignUIHandler
 		SCR_Global.GetDistForHUD(distance, false, dis, units);
 		widget.SetText(dis + " " + units);
 	}
+	
+	override bool CanFastTravel()
+	{
+		OVT_BaseData base = OVT_BaseData.Cast(m_Data);
+		
+		if(base.IsOccupyingFaction()) return false;
+		
+		return true;
+	}
 }

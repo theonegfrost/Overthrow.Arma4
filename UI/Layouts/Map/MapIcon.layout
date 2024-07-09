@@ -39,33 +39,26 @@ FrameWidgetClass {
        }
        "Is Enabled" 0
        {
-        OverlayWidgetClass "{61D068EB02725498}" {
+        SizeLayoutWidgetClass "{61D05ABAA0CB933E}" {
          Name "IconSymbol"
-         Slot OverlayWidgetSlot "{61D068EB02725566}" {
+         Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
          }
          "Z Order" 4
-         Color 0.014 0.014 0.014 1
+         Color 0.007 0.007 0.007 1
+         "Inherit Color" 1
+         AllowWidthOverride 1
+         WidthOverride 32
+         AllowHeightOverride 1
+         HeightOverride 32
          {
-          SizeLayoutWidgetClass "{61D05ABAA0CB933E}" {
-           Name "IconSizeLayout"
-           Slot OverlayWidgetSlot "{5E66BC35D88CD786}" {
+          ImageWidgetClass "{61D05ABAA0CB933D}" {
+           Name "Icon"
+           Slot AlignableSlot "{61D0B5746EF32782}" {
            }
            "Inherit Color" 1
-           AllowWidthOverride 1
-           WidthOverride 32
-           AllowHeightOverride 1
-           HeightOverride 32
-           {
-            ImageWidgetClass "{61D05ABAA0CB933D}" {
-             Name "Icon"
-             Slot AlignableSlot "{5E66BC35A573A4F0}" {
-             }
-             "Inherit Color" 1
-             Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
-             Image "careerCircle"
-             Size 128 128
-            }
-           }
+           Texture "{FDD5423E69D007F8}UI/Textures/Icons/icons_wrapperUI-128.imageset"
+           Image "careerCircle"
+           Size 128 128
           }
          }
         }

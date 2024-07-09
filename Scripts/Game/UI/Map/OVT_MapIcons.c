@@ -64,7 +64,7 @@ class OVT_MapIcons : SCR_MapUIBaseComponent
 		{
 			OVT_MapPOIData poi = m_aPOIs[i];
 			ImageWidget image = ImageWidget.Cast(w.FindAnyWidget("Icon"));
-			SizeLayoutWidget size = SizeLayoutWidget.Cast(w.FindAnyWidget("IconSizeLayout"));
+			SizeLayoutWidget size = SizeLayoutWidget.Cast(image.GetParent());
 			if(m_MapEntity.GetCurrentZoom() < 1)
 			{
 				m_POIDefaultIcon.SetIconTo(image);

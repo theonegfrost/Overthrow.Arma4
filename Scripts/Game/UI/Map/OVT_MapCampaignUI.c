@@ -84,6 +84,7 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 {	
 	protected OVT_CampaignMapUIElement m_SelectedElement;
 	protected Widget m_MapInfo;
+	protected Widget m_FastTravel;
 	
 	[Attribute("", UIWidgets.Object, "Overthrow map handlers")]
 	protected ref array<ref OVT_MapCampaignUIHandlerDefinition> m_aHandlers;
@@ -91,7 +92,18 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 	[Attribute("{F5E0CFFFC9F27B19}UI/Layouts/Map/MapIcon.layout", params: "layout")]
 	protected ResourceName m_IconLayout;
 	
+	[Attribute("{0ADA1F2624EA1AA1}UI/Layouts/Map/FastTravel.layout", params: "layout")]
+	protected ResourceName m_FastTravelLayout;
+	
 	protected ref map<Widget, float> m_mCeilings = new map<Widget, float>();
+	
+	protected bool m_bFastTravelMode = false;
+	
+	void SetFastTravelMode(bool mode)
+	{
+		m_bFastTravelMode = mode;
+		UpdateIcons();
+	}
 	
 	protected void InitIcons()
 	{
@@ -191,7 +203,97 @@ class OVT_MapCampaignUI : SCR_MapUIElementContainer
 				m_MapInfo = GetGame().GetWorkspace().CreateWidgets(infoHandler.m_Layout, m_RootWidget);
 				infoHandler.ShowInfo(m_MapInfo);
 			}
+			
+			if(m_bFastTravelMode && infoHandler.CanFastTravel())
+			{
+				ShowFastTravel();
+			}else{
+				HideFastTravel();
+			}
+		}else{
+			HideFastTravel();
 		}
+	}
+	
+	protected void ShowFastTravel()
+	{
+		m_FastTravel = GetGame().GetWorkspace().CreateWidgets(m_FastTravelLayout, m_RootWidget);
+		Widget ww = m_FastTravel.FindAnyWidget("Fast Travel");
+		SCR_InputButtonComponent btn = SCR_InputButtonComponent.Cast(ww.FindHandler(SCR_InputButtonComponent));		
+		btn.m_OnActivated.Insert(FastTravel);
+	}
+	
+	protected void HideFastTravel()
+	{
+		if(m_FastTravel)
+		{
+			Widget ww = m_FastTravel.FindAnyWidget("Fast Travel");
+			SCR_InputButtonComponent btn = SCR_InputButtonComponent.Cast(ww.FindHandler(SCR_InputButtonComponent));		
+			btn.m_OnActivated.Remove(FastTravel);
+			
+			m_FastTravel.RemoveFromHierarchy();
+			m_FastTravel = null;
+		}
+	}
+		
+	protected void FastTravel()
+	{
+		Print("Fast Travelling");
+		
+		vector pos = m_SelectedElement.GetPos();
+		
+		OVT_EconomyManagerComponent economy = OVT_Global.GetEconomy();
+		IEntity player = SCR_PlayerController.GetLocalControlledEntity();
+		int playerId = GetGame().GetPlayerManager().GetPlayerIdFromControlledEntity(player);
+		string playerPersId = OVT_Global.GetPlayers().GetPersistentIDFromPlayerID(playerId);
+				
+		int cost = OVT_Global.GetConfig().m_Difficulty.fastTravelCost;
+			
+		if(OVT_Global.GetConfig().m_bDebugMode) cost = 0;
+		
+		if(!economy.PlayerHasMoney(playerPersId, cost))
+		{
+			ShowHint("#OVT-CannotAfford");
+			m_MapEntity.CloseMap();
+			SetFastTravelMode(false);
+			return;
+		}
+				
+		pos = OVT_Global.FindSafeSpawnPosition(pos);
+		
+		m_MapEntity.CloseMap();
+		SetFastTravelMode(false);
+				
+		if(player)
+		{
+			//If in a vehicle, make sure we are the driver first
+			ChimeraCharacter character = ChimeraCharacter.Cast(player);
+			if(character && character.IsInVehicle())
+			{
+				CompartmentAccessComponent compartmentAccess = character.GetCompartmentAccessComponent();
+				if (compartmentAccess)
+				{
+					BaseCompartmentSlot slot = compartmentAccess.GetCompartment();
+					if(slot.GetType() == ECompartmentType.PILOT)
+					{
+						if(cost > 0)
+							economy.TakePlayerMoney(playerId, cost);
+						OVT_Global.GetServer().RequestFastTravel(playerId, pos);
+					}else{
+						ShowHint("#OVT-MustBeDriver");
+					}
+				}
+			}else{
+				if(cost > 0)
+					economy.TakePlayerMoney(playerId, cost);
+				SCR_Global.TeleportPlayer(playerId, pos);					
+			}				
+		}
+	}
+	
+	protected void ShowHint(string text)
+	{		
+		SCR_HintManagerComponent.GetInstance().ShowCustom(text);		
 	}
 	
 	protected override void UpdateIcons()

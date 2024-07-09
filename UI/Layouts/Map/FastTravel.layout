@@ -1,0 +1,32 @@
+FrameWidgetClass {
+ Name "rootFrame"
+ Slot FrameWidgetSlot "{61D0B573F4DFD596}" {
+  Anchor 1 1 1 1
+  PositionX -275
+  OffsetLeft -275
+  PositionY -450
+  OffsetTop -450
+  SizeX 500
+  OffsetRight -225
+  SizeY 50
+  OffsetBottom 400
+ }
+ {
+  ButtonWidgetClass "{61D0B5725CA2BFC8}" : "{08CF3B69CB1ACBC4}UI/layouts/WidgetLibrary/Buttons/WLib_NavigationButton.layout" {
+   Name "Fast Travel"
+   Slot FrameWidgetSlot "{61D0B5725CA2BF22}" {
+    OffsetLeft 0
+    OffsetTop 0
+    SizeX 275
+    OffsetRight -275
+    OffsetBottom -30
+   }
+   components {
+    SCR_InputButtonComponent "{5D346C3DD81D95CD}" {
+     m_sActionName "MenuSelect"
+     m_sLabel "#ovt-mainmenu_fasttravel"
+    }
+   }
+  }
+ }
+}
